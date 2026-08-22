@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Body, Button, C, Card, Eyebrow, H1, H2, Metric, Page, Pill } from '@/components/ui';
 import { OPERATORS } from '@/data/operators';
-import { exportUatCsv, loadFeedback, loadSurveys, loadUatSessions, UatFeedback, UatSession, UatSurvey, uatMetrics } from '@/lib/uat';
+import { exportUatCsv, loadFeedback, loadSurveys, loadUatSessions, prepareForNextTester, UatFeedback, UatSession, UatSurvey, uatMetrics } from '@/lib/uat';
 import { birthBehaviorAgreement, confusionMatrix, exportResearchCsv, loadParticipants, loadTrials, makeResearchId, ResearchParticipant, ResearchTrial, researchMetrics, saveParticipant } from '@/lib/research';
 
 export default function Research(){
@@ -15,9 +15,12 @@ export default function Research(){
  const add=async()=>{const b=Number(birth);const o=Number(observed);if(!code.trim())return;await saveParticipant({id:makeResearchId('p'),code:code.trim().toUpperCase(),createdAt:new Date().toISOString(),birthRoot:b>=1&&b<=9?b:null,observedOperator:o>=1&&o<=9?o:null});setCode('');setBirth('');setObserved('');refresh();};
  const shareResearch=async()=>Share.share({message:exportResearchCsv(participants,trials),title:'PAA V0.10 anonymized research export'});
  const shareUat=async()=>Share.share({message:exportUatCsv(uatSessions,feedback,surveys),title:'PAA V0.10 UAT export'});
+ const nextTester=()=>Alert.alert('Prepare for next tester?','This clears the current tester session, unfinished assessment draft, and latest profile from this device. Historical UAT sessions, feedback, surveys, and research records remain available for export.',[{text:'Cancel',style:'cancel'},{text:'Prepare device',style:'destructive',onPress:async()=>{await prepareForNextTester();router.replace('/onboarding')}}]);
  return <SafeAreaView style={{flex:1,backgroundColor:C.bg}}><ScrollView><Page>
    <Pill label="V0.10 · RESEARCHER VIEW" tone="gold"/><Eyebrow>RESEARCH ENGINE</Eyebrow><H1>Make the theory answer to records.</H1>
    <Body muted>This screen is for study administration. Participant experience metrics and model-performance metrics remain separate so commercial enthusiasm cannot overwrite evidence.</Body>
+
+   <Card><Eyebrow>SHARED-DEVICE CONTROL</Eyebrow><H2>One tester leaves no residue for the next.</H2><Body muted>Use this after a participant finishes. It clears only current-session cues and drafts; historical study records remain intact.</Body><Button label="Prepare device for next tester" onPress={nextTester}/></Card>
 
    <Card><Eyebrow>UAT COHORT HEALTH</Eyebrow><H2>{um.completed}/{um.assessmentStarted} core readings completed</H2><Body muted>{uatSessions.length} sessions · {um.surveyed} final surveys · {feedback.length} issue reports.</Body><View style={s.metrics}><Metric label="COMPLETION" value={`${um.assessmentStarted?Math.round(um.completionRate*100):0}%`} detail="among assessment starters"/><Metric label="SURVEY RETURN" value={`${um.completed?Math.round(um.surveyRate*100):0}%`} detail="among completed readings"/></View><Button secondary label="Export UAT dataset" onPress={shareUat}/></Card>
 
