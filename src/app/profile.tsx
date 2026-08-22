@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Body, Button, C, Card, Eyebrow, H1, H2, Page } from '@/components/ui';
+import { Body, Button, C, Card, Eyebrow, H1, H2, Page, Pill } from '@/components/ui';
 import { OPERATORS } from '@/data/operators';
 import { scoreAnswers, signalClarity } from '@/lib/boi';
 import { polarity } from '@/lib/arithmos';
@@ -26,7 +26,8 @@ export default function Profile(){
  },[primary,answeredCount,birth,clarity,answers]);
 
  return <SafeAreaView style={{flex:1,backgroundColor:C.bg}}><ScrollView><Page>
-   <Eyebrow>CONVERGENCE READING · V0.8 RC1</Eyebrow>
+   <Pill label="V0.10 · CORE READING COMPLETE" tone="gold"/>
+   <Eyebrow>CONVERGENCE READING</Eyebrow>
    <H1>Your number made a prediction. Your choices supplied independent evidence.</H1>
    <View style={s.grid}>
      <Card><Eyebrow>GLYPH</Eyebrow><Text style={s.big}>{birth||'—'}</Text><Body muted>Numerical hypothesis</Body></Card>
@@ -53,7 +54,7 @@ export default function Profile(){
      })}
      <Body muted>Each operator appeared in exactly 12 answer positions. Rates therefore compare like with like.</Body>
      <Body muted>{clarity==='DISTINCT'
-       ? `A gap this size is worth treating as a real signal. Go test it against lived episodes rather than the instrument again.`
+       ? `A gap this size is worth treating as a real signal. Test it against lived episodes rather than simply retaking the instrument.`
        : clarity==='EMERGING'
        ? `The lead is real but not decisive. Record five or more episodes before trusting ${op?.verb ?? 'the top operator'} over the runner-up.`
        : clarity==='MIXED'
@@ -68,35 +69,30 @@ export default function Profile(){
        const pole = polarity(primary);
        const rival = pole ? OPERATORS[pole-1] : null;
        return rival
-         ? <Body muted>Its structural counterpart is {rival.n} · {rival.verb} ({rival.movement}). If your episodes keep producing that instead of {op.verb}, the reading is not converging — it is being overwritten. Record those episodes in Anamnesis rather than explaining them away.</Body>
-         : <Body muted>{op.verb} has no structural counterpart on the ennead — it names the crossing itself. Its failure mode is not a rival operator but hesitation: episodes where a limit was seen clearly and not crossed.</Body>;
+         ? <Body muted>Its structural counterpart is {rival.n} · {rival.verb} ({rival.movement}). If your episodes keep producing that instead of {op.verb}, the reading is not converging — it is being overwritten.</Body>
+         : <Body muted>{op.verb} has no structural counterpart on the ennead. Its failure mode is not a rival operator but episodes in which the expected transformation simply does not occur.</Body>;
      })()}
    </Card>}
 
    {op&&<Card>
      <Eyebrow>XIPHOS</Eyebrow><H2>What would falsify this reading?</H2>
      <Body>{op.question}</Body>
-     <Body muted>The next instrument layer should collect concrete episodes as CONDITION → OBJECT → ACTION → TRANSFORMATION → RESULT and allow counterexamples to alter the profile.</Body>
+     <Body muted>Use CONDITION → OBJECT → ACTION → TRANSFORMATION → RESULT to record counterexamples as carefully as confirmations.</Body>
    </Card>}
 
    <Card>
      <Eyebrow>INSTRUMENT STATUS</Eyebrow>
-     <Body>This is the V0.7 interface over the balanced 36-item BOI: a research prototype. Its scores are descriptive signals, not validated psychological measurements. Reliability, test–retest stability, construct discrimination, and predictive validity still have to be earned experimentally.</Body>
+     <Body>The balanced 36-item BOI is a research prototype. Scores are descriptive signals, not validated psychological measurements. Reliability, test–retest stability, construct discrimination, and predictive validity must be earned experimentally.</Body>
    </Card>
 
-   <Button label="Tell us whether this result made sense" onPress={()=>router.push({pathname:'/feedback',params:{screen:'profile-result'}})} />
+   <Button label="Complete the final UAT survey" onPress={()=>router.push('/uat-complete')} />
+   <Button secondary label="Report a specific issue instead" onPress={()=>router.push({pathname:'/feedback',params:{screen:'profile-result'}})} />
    <Button secondary label="Record a real episode now" onPress={()=>router.push('/episode')} />
    <Button secondary label="Open Anamnesis record" onPress={()=>router.push('/episodes')} />
-   <Button secondary label="Run the test again" onPress={()=>router.replace({pathname:'/assessment',params:{birth:birth??'0'}})} />
    <Button secondary label="Return home" onPress={()=>router.replace('/')} />
  </Page></ScrollView></SafeAreaView>
 }
 
 const s=StyleSheet.create({
-  grid:{gap:12},
-  big:{fontSize:50,fontWeight:'800',color:C.gold},
-  rankRow:{flexDirection:'row',gap:12,paddingVertical:10,borderBottomWidth:1,borderBottomColor:C.line},
-  rank:{fontSize:16,fontWeight:'800',color:C.gold,width:20},
-  rankTitle:{fontSize:16,fontWeight:'800',color:C.ink},
-  small:{fontSize:13,color:C.muted,marginTop:2}
+  grid:{gap:12},big:{fontSize:50,fontWeight:'800',color:C.gold},rankRow:{flexDirection:'row',gap:12,paddingVertical:10,borderBottomWidth:1,borderBottomColor:C.line},rank:{fontSize:16,fontWeight:'800',color:C.gold,width:20},rankTitle:{fontSize:16,fontWeight:'800',color:C.ink},small:{fontSize:13,color:C.muted,marginTop:2}
 });
