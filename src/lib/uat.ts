@@ -9,11 +9,13 @@ export type FeedbackKind='confusing'|'bug'|'wrong'|'helpful'|'other';
 export type UatFeedback={id:string;sessionId?:string|null;participantCode?:string|null;screen:string;kind:FeedbackKind;message:string;createdAt:string};
 export type UatSurvey={id:string;sessionId:string;participantCode:string;createdAt:string;comprehension:number;resultFit:number;usefulness:number;trustInMethod:number;wouldUseAgain:boolean;strongestValue:string;biggestFriction:string;};
 
-// Keep the established session/feedback keys so V0.10 can read V0.8/V0.9 local records.
+// Keep established session/feedback keys so V0.10 can read V0.8/V0.9 local records.
 const SESSION_KEY='paa:uat:session:v08';
 const SESSIONS_KEY='paa:uat:sessions:v08';
 const FEEDBACK_KEY='paa:uat:feedback:v08';
 const SURVEY_KEY='paa:uat:surveys:v10';
+const ASSESSMENT_DRAFT_KEY='paa:assessment:draft';
+const LATEST_PROFILE_KEY='paa:latest-profile:v07';
 
 export function makeId(prefix:string){return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;}
 export function normalizeParticipantCode(value:string){return value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,24)}
@@ -22,6 +24,7 @@ export async function loadCurrentSession():Promise<UatSession|null>{const raw=aw
 export async function saveCurrentSession(s:UatSession){await AsyncStorage.setItem(SESSION_KEY,JSON.stringify(s));const all=await arr<UatSession>(SESSIONS_KEY);await AsyncStorage.setItem(SESSIONS_KEY,JSON.stringify([s,...all.filter(x=>x.id!==s.id)]));}
 export async function patchCurrentSession(patch:Partial<UatSession>){const s=await loadCurrentSession();if(!s)return null;const next={...s,...patch};await saveCurrentSession(next);return next;}
 export async function startUatSession(participantCode:string){const clean=normalizeParticipantCode(participantCode);const s:UatSession={id:makeId('uat'),participantCode:clean,startedAt:new Date().toISOString(),consented:true,onboardingCompleted:true,assessmentStarted:false,assessmentCompleted:false,surveyCompleted:false};await saveCurrentSession(s);return s;}
+export async function prepareForNextTester(){await AsyncStorage.multiRemove([SESSION_KEY,ASSESSMENT_DRAFT_KEY,LATEST_PROFILE_KEY]);}
 export async function loadUatSessions(){return arr<UatSession>(SESSIONS_KEY)}
 export async function saveFeedback(f:Omit<UatFeedback,'id'|'createdAt'>){const all=await arr<UatFeedback>(FEEDBACK_KEY);const item:UatFeedback={...f,id:makeId('fb'),createdAt:new Date().toISOString()};await AsyncStorage.setItem(FEEDBACK_KEY,JSON.stringify([item,...all]));return item}
 export async function loadFeedback(){return arr<UatFeedback>(FEEDBACK_KEY)}
