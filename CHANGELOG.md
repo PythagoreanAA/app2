@@ -1,5 +1,17 @@
 # Changelog
 
+## V0.9 RC — UAT Hardening & Distribution
+- Restored the canonical Expo project structure under `src/app`, `src/lib`, `src/data`, and `src/components` and removed flattened duplicate source files.
+- Blinded BOI answer choices so participants cannot use operator-number cues to steer their result.
+- Added assessment-start telemetry for real completion/attrition measurement.
+- Strengthened explicit voluntary UAT consent and local-data disclosure.
+- Added `UAT_PROTOCOL.md` with acceptance gates for real-person testing.
+- Added `UAT_DATA_AND_PRIVACY.md` with prototype data-governance boundaries.
+- Added TypeScript and Expo configuration checks through GitHub Actions.
+- Added EAS `preview` internal-distribution configuration for stakeholder/tester builds.
+- Added standard project hygiene (`.gitignore`, `typecheck` script) and bumped app/package version to 0.9.0.
+- Preserved divergence, counterevidence, blinded trials, prospective forecasts, confusion-matrix analysis, and anonymized exports.
+
 ## V0.8 RC1 — User Acceptance Testing
 - Frozen core operator canon for comparable UAT sessions.
 - Three-step first-run onboarding and explicit non-diagnostic framing.
@@ -10,7 +22,6 @@
 - Research screen now summarizes UAT completion and recent feedback.
 - Exportable UAT session + feedback CSV.
 - Version language audited to distinguish hypothesis, observation, convergence, and evidence.
-
 
 ## 0.7.0 — Product Experience
 - Rebuilt the home screen around three comprehensible paths: Discover, Observe, Test.
