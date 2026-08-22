@@ -7,15 +7,12 @@ export type UatSession = {
 };
 export type FeedbackKind='confusing'|'bug'|'wrong'|'helpful'|'other';
 export type UatFeedback={id:string;sessionId?:string|null;participantCode?:string|null;screen:string;kind:FeedbackKind;message:string;createdAt:string};
-export type UatSurvey={
-  id:string; sessionId:string; participantCode:string; createdAt:string;
-  comprehension:number; resultFit:number; usefulness:number; trustInMethod:number; wouldUseAgain:boolean;
-  strongestValue:string; biggestFriction:string;
-};
+export type UatSurvey={id:string;sessionId:string;participantCode:string;createdAt:string;comprehension:number;resultFit:number;usefulness:number;trustInMethod:number;wouldUseAgain:boolean;strongestValue:string;biggestFriction:string;};
 
-const SESSION_KEY='paa:uat:session:v10';
-const SESSIONS_KEY='paa:uat:sessions:v10';
-const FEEDBACK_KEY='paa:uat:feedback:v10';
+// Keep the established session/feedback keys so V0.10 can read V0.8/V0.9 local records.
+const SESSION_KEY='paa:uat:session:v08';
+const SESSIONS_KEY='paa:uat:sessions:v08';
+const FEEDBACK_KEY='paa:uat:feedback:v08';
 const SURVEY_KEY='paa:uat:surveys:v10';
 
 export function makeId(prefix:string){return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;}
