@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 — UAT Productization
+- Added structured final UAT survey: comprehension, perceived result fit, usefulness, trust in method, return intent, strongest value, and biggest friction.
+- Added researcher dashboard metrics that keep product acceptance separate from model/predictive evidence.
+- Added shared-device handoff: prepare the device for the next tester without deleting historical study records.
+- Preserved the established V0.8/V0.9 UAT storage namespace so V0.10 extends existing local records.
+- Extended UAT CSV export with final-survey records.
+- Added `UAT_DATA_DICTIONARY.md` for reproducible dataset interpretation.
+- Added `PILOT_GATES.md` defining build, comprehension, cohort, instrument, and institutional licensing thresholds.
+- Updated home flow so completed testers are routed to the final UAT survey before deeper exploration.
+- Updated result screen language and versioning; removed stale V0.7/V0.8 interface references.
+- Bumped package and Expo metadata to 0.10.0.
+
 ## V0.9 RC — UAT Hardening & Distribution
 - Restored the canonical Expo project structure under `src/app`, `src/lib`, `src/data`, and `src/components` and removed flattened duplicate source files.
 - Blinded BOI answer choices so participants cannot use operator-number cues to steer their result.
